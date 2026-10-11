@@ -9,7 +9,7 @@
 > upstream documentation is accurate and fully applicable — see the
 > Documentation section of `instructions.md` for links.
 
-Siftstr is a self-hosted daily triage gate for Miniflux and Nostr: a Claude scheduled task summarizes new items each morning and you archive, promote, or keep each one. This package runs the upstream image against a single SQLite database on its own volume. Upstream project: [Jolls/Siftstr](https://github.com/Jolls/Siftstr).
+Siftstr is a self-hosted daily triage gate for Miniflux, Nostr, and Karakeep: you triage new items on their title and excerpt, delete, promote, or keep each one, and a Claude scheduled task writes a summary for what you promote each morning. This package runs the upstream image against a single SQLite database on its own volume. Upstream project: [Jolls/Siftstr](https://github.com/Jolls/Siftstr).
 
 ---
 
