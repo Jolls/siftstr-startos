@@ -13,7 +13,7 @@ export const manifest = setupManifest({
   volumes: ['main'],
   images: {
     siftstr: {
-      source: { dockerTag: 'ghcr.io/jolls/siftstr:0.2.0' },
+      source: { dockerTag: 'ghcr.io/jolls/siftstr:0.2.7' },
       arch: ['x86_64', 'aarch64'],
     },
   },

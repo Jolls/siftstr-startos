@@ -1,16 +1,6 @@
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
-
-const peers = [
-  { name: 'Miniflux', packageId: 'miniflux', hostId: 'ui', internalPort: 8080 },
-  { name: 'Karakeep', packageId: 'karakeep', hostId: 'ui', internalPort: 3000 },
-  {
-    name: 'MeTube',
-    packageId: 'metube',
-    hostId: 'ui-multi',
-    internalPort: 8081,
-  },
-]
+import { peers } from '../utils'
 
 export const showInternalAddresses = sdk.Action.withoutInput(
   // id
