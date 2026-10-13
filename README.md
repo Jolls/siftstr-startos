@@ -44,7 +44,7 @@ A single volume, `main`, holds everything. The `data` subpath is mounted at `/da
 
 ## Dependencies
 
-None declared. Siftstr connects to Miniflux, Karakeep and MeTube through destinations configured inside its own UI, using the address and API key the user enters; the package does not read or write them.
+None declared. Siftstr connects to Miniflux, Karakeep and MeTube through destinations configured inside its own UI. For each of them that is installed, `main.ts` resolves its bridge address with `sdk.host.getBridgeAddress(...).const()` and passes `http://<address>` as `SIFTSTR_MINIFLUX_URL`, `SIFTSTR_KARAKEEP_URL` or `SIFTSTR_METUBE_URL`; a service that is not installed gets no variable. Siftstr applies these to the admin user's connection of that kind at every start: it creates the connection if there is none and otherwise replaces its URL, so a URL typed in the UI for one of these kinds does not survive a restart. The API key is never supplied: the user pastes it into Siftstr, which saves it encrypted. A change in a dependency's address (reinstall on a new port) or its installation restarts Siftstr once.
 
 ## Network Access and Interfaces
 
@@ -58,7 +58,7 @@ Install does not create a user and the service does not start until both critica
 
 - **Set Admin Password** — run it for first setup, or to replace a lost password. It changes only the `admin` row in `siftstr.db`, takes a few seconds, and works whether the service is running or stopped. Each run replaces the password and returns the new one; sessions already signed in are not touched by the package.
 - **Set Base URL** — run it to change the address Siftstr uses for absolute links and the `Secure` cookie flag. It writes `baseUrl` in `store.json`, which the daemon reads reactively.
-- **Show Internal Addresses** — read-only and safe to repeat. Resolves the bridge address and assigned port of Miniflux (`ui`, 8080), Karakeep (`ui`, 3000) and MeTube (`ui-multi`, 8081) when installed. The port can change if that service is reinstalled, so re-run it when a destination stops connecting.
+- **Show Internal Addresses** — read-only and safe to repeat. Resolves the bridge address and assigned port of Miniflux (`ui`, 8080), Karakeep (`ui`, 3000) and MeTube (`ui-multi`, 8081) when installed: the same values `main.ts` passes to Siftstr as destination URLs, so it shows what Siftstr was given.
 
 ## Tasks
 
@@ -79,6 +79,8 @@ The whole `main` volume is copied, including `briefings/`, `backups/`, `secret.k
 2. `SIFTSTR_SECRET_KEY` is not set; Siftstr generates `/data/secret.key` itself.
 3. Siftstr terminates no TLS and the package does not either; HTTPS comes from the StartOS address chosen in **Set Base URL**.
 4. Mounting a private CA through `SSL_CERT_DIR` is not offered.
+5. `SIFTSTR_TRUSTED_PROXIES` is not set, so Siftstr's login limits see the StartOS proxy's address rather than each client's. Failures are still counted per username.
+6. `SIFTSTR_*_API_KEY` is not set; connection keys are entered in Siftstr only.
 
 ---
 
@@ -95,7 +97,10 @@ file_models:
   - store.json
 startos_managed_env_vars:
   - SIFTSTR_BASE_URL
-dependencies: none
+  - SIFTSTR_MINIFLUX_URL # only when miniflux is installed
+  - SIFTSTR_KARAKEEP_URL # only when karakeep is installed
+  - SIFTSTR_METUBE_URL # only when metube is installed
+dependencies: none declared (miniflux, karakeep, metube are read optionally)
 interfaces:
   ui: { type: ui, port: 8080 }
 actions:
